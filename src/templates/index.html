@@ -1,0 +1,87 @@
+{% extends 'base.html' %} {% block body %}
+<div class="row">
+  <div class="col-3 h-100">
+    <ul class="list-group">
+      {% for idp in idp_list %}
+      <a class="list-group-item" href="?identity_provider={{idp.name}}"
+        >{{ idp.name }}</a
+      >
+      {% endfor%}
+    </ul>
+  </div>
+  <div class="col-9 h-100">
+    {% if selected %}
+    <h2>{{ selected.name }}</h2>
+    <ul class="nav nav-tabs mb-3" id="idpTab">
+      <li class="nav-item">
+        <a
+          class="nav-link active"
+          id="metadata-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#metadata"
+          >metadata</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          id="authn-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#authn"
+          >authn request</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          id="config-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#config"
+          >config</a
+        >
+      </li>
+    </ul>
+    <div class="tab-content" id="idpTabContent">
+      <div class="tab-pane fade show active" id="metadata">
+        <div class="card p-3">
+          <h4>metadata</h4>
+          <div class="bg-light my-1">
+            <pre>{{ selected.get_metadata }}</pre>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="authn">
+        <div class="card p-3">
+          <h4>sample authn request</h4>
+          <div class="bg-light my-1">
+            <pre>{{ selected.get_sample_request }}</pre>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="config">
+        <div class="card p-3">
+          <h4>config</h4>
+          {% for config in selected.samlauthnrequestconfiguration_set.all %}
+          <h5>{{ config.tag_name }}</h5>
+          <div class="bg-light my-1">
+            <pre>{{ config.values }}</pre>
+          </div>
+          {% endfor %}
+          <div>
+            <a class="btn btn-primary">Add</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-3">
+        <a
+          class="btn btn-success"
+          href="/login/?identity_provider={{selected.name}}"
+          >Login</a
+        >
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
